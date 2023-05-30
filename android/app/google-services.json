@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "26953062940",
+    "project_id": "notes-blup-project",
+    "storage_bucket": "notes-blup-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26953062940:android:33cf96195efeed1f7b5dd9",
+        "android_client_info": {
+          "package_name": "com.example.notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26953062940-a6nt08000cop5ma0ejeq5eq4nnj732rq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7GVokAKtx1LRpJFyyIGM3hf5KhJzPeQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "26953062940-a6nt08000cop5ma0ejeq5eq4nnj732rq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
