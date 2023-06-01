@@ -22,10 +22,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ));
       final email = event.email;
       if (email == null) {
-        return; // user just wants to go to forgot-password screen
+        return;
       }
 
-      // user wants to actually send a forgot-password email
       emit(const AuthStateForgotPassword(
         exception: null,
         hasSentEmail: false,
