@@ -14,11 +14,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Flutter
-        run: |
-          curl https://storage.googleapis.com/flutter_infra/releases/stable/windows/flutter_windows_2.10.0-stable.zip -o flutter_sdk.zip
-          mkdir flutter
-          tar -xf flutter_sdk.zip -C flutter
-          echo "::add-path::$PWD/flutter/bin"
+        uses: flutter/flutter-action@v1
+        with:
+          flutter-version: '2.10.0'
 
       - name: Install project dependencies
         run: flutter pub get
