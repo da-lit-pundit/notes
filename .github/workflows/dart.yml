@@ -14,9 +14,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Flutter
-        uses: dart-lang/setup-flutter@v1
-        with:
-          flutter-version: '2.10.0'
+        run: |
+          curl https://storage.googleapis.com/flutter_infra/releases/stable/windows/flutter_windows_2.10.0-stable.zip -o flutter_sdk.zip
+          Expand-Archive -Path .\flutter_sdk.zip -DestinationPath .\flutter
+          echo "::add-path::${{ runner.workspace }}\flutter\bin"
 
       - name: Install project dependencies
         run: flutter pub get
