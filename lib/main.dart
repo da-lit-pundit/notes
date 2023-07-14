@@ -18,7 +18,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
-      title: 'Blup Notes',
+      title: 'Blup Notes', //comment to check workflow
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
         if (state.isLoading) {
           LoadingScreen().show(
             context: context,
-            text: state.loadingText ?? 'Please wait a moment',
+            text: state.loadingText ?? 'Please wait a moment...',//new comment to check second build actions
           );
         } else {
           LoadingScreen().hide();
