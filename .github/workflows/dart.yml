@@ -13,7 +13,7 @@ jobs:
         with:
           channel: 'stable'
       - name: Install Flutter SDK
-        run: flutter sdk-version
+        run: flutter sdk-version 2.19.0
       - name: Update Flutter SDK
         run: flutter upgrade --force
       - name: Install project dependencies
