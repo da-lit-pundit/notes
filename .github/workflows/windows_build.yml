@@ -1,4 +1,4 @@
-name: DART  CI
+name: DART CI
 
 on: push
 
@@ -22,6 +22,10 @@ jobs:
         run: flutter config --enable-windows-desktop
       - name: Build artifacts
         run: flutter build windows --release
+      - name: Generate MSIX Package
+        run: flutter msix create
+      - name: Sign MSIX Package
+        run: flutter msix sign
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
