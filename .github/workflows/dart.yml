@@ -13,12 +13,16 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Install Dart SDK
+      run: |
+        curl https://storage.googleapis.com/dart-archive/channels/stable/release/2.16.0/sdk/dartsdk-windows-x64-release.zip -o dartsdk.zip
+        powershell -command "Expand-Archive -Path dartsdk.zip -DestinationPath dart-sdk"
+        echo "DART_HOME=$(pwd)/dart-sdk" >> $GITHUB_ENV
+
     - name: Set up Flutter
       uses: subosito/flutter-action@v1
       with:
-        flutter-version: '2.16.0'
-        channel: 'stable'
-        with-dart: '2.16.0'
+        flutter-version: '2.x'
 
     - name: Check out code
       uses: actions/checkout@v2
