@@ -1,0 +1,22 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows app
+        run: flutter build windows
