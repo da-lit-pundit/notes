@@ -11,7 +11,7 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
-          flutter-version: '2.10.0'
+          flutter-version: '>=2.19.6 <3.0.0'  # Specify the required Flutter SDK version range
       - name: Install project dependencies
         run: flutter pub get
       - name: Generate intermediates
