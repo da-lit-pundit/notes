@@ -41,7 +41,7 @@ dependencies:
   firebase_analytics: ^10.4.1
   sqflite: ^2.2.8+4
   path_provider: ^2.0.15
-  path: ^1.8.2
+  path: 1.8.0
   share_plus: ^7.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3
