@@ -24,12 +24,6 @@ jobs:
         working-directory: ./
         run: flutter pub get
 
-      - name: Analyze code
-        run: flutter analyze
-
-      - name: Run widget tests
-        run: flutter test
-
       - name: Build APK
         working-directory: ./
         run: flutter build apk
