@@ -71,10 +71,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: webfactory/ssh-agent@v0.6.0
-        with:
-          ssh-private-key: |
-            ${{ secrets.YOUR_SSH_PRIVATE_KEY }} # Add your SSH private key here
+      # - uses: webfactory/ssh-agent@v0.6.0
+      #   with:
+      #     ssh-private-key: |
+      #       ${{ secrets.YOUR_SSH_PRIVATE_KEY }} # Add your SSH private key here
 
       - uses: subosito/flutter-action@v1
         with:
