@@ -1,46 +1,99 @@
-name: DART CI
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
 
-on: push
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    types: [review_requested, ready_for_review, opened ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-release-windows:
-    runs-on: windows-latest
-
+  flutter_test:
+    name: Run flutter Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v2
+      
+      # Make sure the @v0.6.0 matches the current version of the
+      # action 
+      - uses: webfactory/ssh-agent@v0.6.0
+        with:
+          ssh-private-key: |
+            ${{ secrets.BLUP_LOGIN_WIDGET_SSH_PRIVATE_KEY }}
+            ${{ secrets.ACTION_KEY_DART_EVAL_DBC_IR }}
+            ${{ secrets.ACTION_KEY_APOLLOVM }}
+            ${{ secrets.ACTION_KEY_AWS_API }}
+            ${{ secrets.ACTION_KEY_BLUP_DOCUMENTATION }}
+            ${{ secrets.ACTION_KEY_BLUP_UTILS }}
+            ${{ secrets.ACTION_KEY_BLUPSHEETS }}
+            ${{ secrets.ACTION_KEY_CUSTOM_WIDGETS }}
+            ${{ secrets.ACTION_KEY_DRIFT_DATABASE }}
+            ${{ secrets.ACTION_KEY_EDITOR_FROM_SCRATCH }}
+            ${{ secrets.ACTION_KEY_FEEDBACK }}
+            ${{ secrets.ACTION_KEY_FLUTTER_EDITOR }}
+            ${{ secrets.ACTION_KEY_FLUTTER_MACOS_FONTS }}
+            ${{ secrets.ACTION_KEY_FLUTTER_CUSTOM_CURSOR }}
+            ${{ secrets.ACTION_KEY_FLUTTER_TREE_VIEW }}
+            ${{ secrets.ACTION_KEY_FLUTTER_XLIDER }}
+            ${{ secrets.ACTION_KEY_FRIDEOS_FLUTTER }}
+            ${{ secrets.ACTION_KEY_IDE_THEME }}
+            ${{ secrets.ACTION_KEY_ZOOM_NOTIFIER }}
+            ${{ secrets.ACTION_KEY_BLUP_DASHBOARD }}
+      
+      # - uses: actions/setup-java@v1
+      #   with:
+      #     java-version: "12.x"
+      
       - uses: subosito/flutter-action@v1
         with:
-          channel: 'stable'
-          flutter-version: '3.10.6'
-      - name: Install project dependencies
+          flutter-version: '3.13.9'
+          channel: "stable"
+      
+      - name: Install Dependencies
+        working-directory: ./ide
         run: flutter pub get
-      - name: Add build_runner dependency
-        run: flutter pub add build_runner
-      - name: Generate intermediates
-        run: flutter pub run build_runner build --delete-conflicting-outputs
-      - name: Enable windows build
-        run: flutter config --enable-windows-desktop
-      - name: Build artifacts
-        run: flutter build windows --release
-      - name: Generate MSIX Package
-        run: flutter msix create
-      - name: Sign MSIX Package
-        run: flutter msix sign
-      - name: Archive Release
-        uses: thedoctor0/zip-release@master
+      
+      - name: Analyze Commit
+        working-directory: ./ide
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        
+  flutter_build:
+    name: Build from Master
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: webfactory/ssh-agent@v0.6.0
         with:
-          type: 'zip'
-          filename: Notes-${{ github.ref_name }}-windows.zip
-          directory: build/windows/runner/Release
-      - name: Extract Executable Files
-        run: |
-          mkdir exe_files
-          powershell -command "Expand-Archive -Path 'build/windows/runner/Release/Notes-${{ github.ref_name }}-windows.zip' -DestinationPath 'exe_files'"
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+          ssh-private-key: |
+            ${{ secrets.YOUR_SSH_PRIVATE_KEY }} # Add your SSH private key here
+
+      - uses: subosito/flutter-action@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1  # Replace with your desired AWS region
-      - name: Upload Executable to S3
-        run: aws s3 cp exe_files s3://exeinstallers/ --recursive
+          flutter-version: '3.13.9'
+          channel: "stable"
+
+      - name: Install Dependencies
+        working-directory: ./ide
+        run: flutter pub get
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run widget tests
+        run: flutter test
+
+      - name: Build APK
+        working-directory: ./ide
+        run: flutter build apk
