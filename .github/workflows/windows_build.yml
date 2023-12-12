@@ -1,8 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Flutter CI
 
 on:
@@ -12,58 +7,7 @@ on:
     branches: [ "main" ]
     types: [review_requested, ready_for_review, opened ]
 
-
 jobs:
-  # flutter_test:
-  #   name: Run flutter Analyze
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 20
-  #   steps:
-  #     - uses: actions/checkout@v2
-      
-  #     # Make sure the @v0.6.0 matches the current version of the
-  #     # action 
-  #     # - uses: webfactory/ssh-agent@v0.6.0
-  #     #   with:
-  #     #     ssh-private-key: |
-  #     #       ${{ secrets.BLUP_LOGIN_WIDGET_SSH_PRIVATE_KEY }}
-  #     #       ${{ secrets.ACTION_KEY_DART_EVAL_DBC_IR }}
-  #     #       ${{ secrets.ACTION_KEY_APOLLOVM }}
-  #     #       ${{ secrets.ACTION_KEY_AWS_API }}
-  #     #       ${{ secrets.ACTION_KEY_BLUP_DOCUMENTATION }}
-  #     #       ${{ secrets.ACTION_KEY_BLUP_UTILS }}
-  #     #       ${{ secrets.ACTION_KEY_BLUPSHEETS }}
-  #     #       ${{ secrets.ACTION_KEY_CUSTOM_WIDGETS }}
-  #     #       ${{ secrets.ACTION_KEY_DRIFT_DATABASE }}
-  #     #       ${{ secrets.ACTION_KEY_EDITOR_FROM_SCRATCH }}
-  #     #       ${{ secrets.ACTION_KEY_FEEDBACK }}
-  #     #       ${{ secrets.ACTION_KEY_FLUTTER_EDITOR }}
-  #     #       ${{ secrets.ACTION_KEY_FLUTTER_MACOS_FONTS }}
-  #     #       ${{ secrets.ACTION_KEY_FLUTTER_CUSTOM_CURSOR }}
-  #     #       ${{ secrets.ACTION_KEY_FLUTTER_TREE_VIEW }}
-  #     #       ${{ secrets.ACTION_KEY_FLUTTER_XLIDER }}
-  #     #       ${{ secrets.ACTION_KEY_FRIDEOS_FLUTTER }}
-  #     #       ${{ secrets.ACTION_KEY_IDE_THEME }}
-  #     #       ${{ secrets.ACTION_KEY_ZOOM_NOTIFIER }}
-  #     #       ${{ secrets.ACTION_KEY_BLUP_DASHBOARD }}
-      
-  #     # - uses: actions/setup-java@v1
-  #     #   with:
-  #     #     java-version: "12.x"
-      
-  #     - uses: subosito/flutter-action@v1
-  #       with:
-  #         flutter-version: '3.13.9'
-  #         channel: "stable"
-      
-  #     - name: Install Dependencies
-  #       working-directory: ./ide
-  #       run: flutter pub get
-      
-  #     - name: Analyze Commit
-  #       working-directory: ./ide
-  #       run: flutter analyze --no-fatal-infos --no-fatal-warnings
-        
   flutter_build:
     name: Build from Master
     runs-on: ubuntu-latest
@@ -71,18 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - uses: webfactory/ssh-agent@v0.6.0
-      #   with:
-      #     ssh-private-key: |
-      #       ${{ secrets.YOUR_SSH_PRIVATE_KEY }} # Add your SSH private key here
-
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '3.13.9'
           channel: "stable"
 
       - name: Install Dependencies
-        working-directory: ./ide
+        working-directory: ./
         run: flutter pub get
 
       - name: Analyze code
@@ -92,5 +31,5 @@ jobs:
         run: flutter test
 
       - name: Build APK
-        working-directory: ./ide
+        working-directory: ./
         run: flutter build apk
