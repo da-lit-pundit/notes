@@ -103,5 +103,3 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
-dependency_overrides:
-  flutter_test: ^1.24.9
