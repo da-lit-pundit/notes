@@ -42,6 +42,10 @@ jobs:
           type: 'zip'
           filename: Notes-windows.zip
           directory: build/windows/runner/Release
+
+      - name: Archive Release
+        if: ${{ success() }} # Only execute if previous steps were successful
+        run: echo "No build output found"  # Placeholder action if no build output is present
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
