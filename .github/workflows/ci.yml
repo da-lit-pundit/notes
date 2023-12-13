@@ -61,4 +61,4 @@ jobs:
           aws-region: ap-south-1  
       
       - name: Upload Executable to S3
-        run: aws s3 cp build/windows/x64/runner/Release s3://exeinstallers/ --recursive --debug
+        run: aws s3 cp build/windows/x64/runner/Release s3://exeinstallers/ --recursive
