@@ -15,4 +15,4 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: Notes Bundle
-          path: ./
+          path: ./downloaded_artifact
