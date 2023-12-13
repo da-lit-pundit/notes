@@ -50,7 +50,7 @@ jobs:
         with:
           type: 'zip'
           filename: Notes-windows.zip
-          directory: build/windows/runner/Release
+          directory: build/windows/x64/runner/Release
 
       
       - name: Configure AWS credentials
