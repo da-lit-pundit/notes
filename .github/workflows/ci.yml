@@ -1,4 +1,4 @@
-name: Flutter CI with WiX Installer
+name: Flutter CI
 
 on:
   push:
@@ -13,59 +13,62 @@ on:
       - opened
 
 jobs:
-  flutter_build_and_wix:
-    name: Build Blup Desktop App and Create WiX Installer
+  flutter_build:
+    name: Build Blup Desktop App 
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v1
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
+      - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v1
         with:
           channel: 'beta'
 
       - name: Install Dependencies
-        run: |
-          flutter pub get
-          flutter pub add build_runner
-          flutter pub run build_runner build --delete-conflicting-outputs
+        run: flutter pub get
 
-      - name: Enable Windows build
+      - name: Add build_runner dependency
+        run: flutter pub add build_runner
+        
+      - name: Generate intermediates
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Enable windows build
         run: flutter config --enable-windows-desktop
 
       - name: Build Windows App
         run: flutter build windows --release
 
-      - name: Install WiX Toolset
-        run: |
-          Invoke-WebRequest -Uri 'https://wixtoolset.org/downloads/v3.11.2/wix311.exe' -OutFile 'wix311.exe'
-          Start-Process -Wait -FilePath 'wix311.exe' -ArgumentList '/quiet /norestart'
-        shell: powershell
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: Notes-windows.zip
+          directory: build/windows/x64/runner/Release
 
-      - name: Create WiX Installer
+      - name: Build Installer
         shell: bash
         env:
           WIX_PATH_CANDLE: "C:/Program Files (x86)/WiX Toolset v3.11/bin/candle.exe"
           WIX_PATH_LIGHT: "C:/Program Files (x86)/WiX Toolset v3.11/bin/light.exe"
         run: |
           mkdir wixout
-          "$WIX_PATH_CANDLE" YourInstallerFile.wxs -o wixout/ -ext WixUtilExtension -ext WixUIExtension
+          "$WIX_PATH_CANDLE" Product.wxs -o wixout/ -ext WixUtilExtension -ext WixUIExtension
           "$WIX_PATH_LIGHT" wixout/*.wixobj -o Installer.msi -ext WixUtilExtension -ext WixUIExtension
           git_hash=$(git rev-parse --short "$GITHUB_SHA")
           mv Installer.msi MyApplication-$(date +'%Y-%m-%d')-${git_hash}.msi
           ls
-        working-directory: ${{ github.workspace }}
 
-      - name: Upload WiX Installer to S3
-        run: aws s3 cp MyApplication-*.msi s3://exeinstallers/
-        working-directory: ${{ github.workspace }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ap-south-1
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1  
+      
+      - name: Upload Executable to S3
+        run: aws s3 cp build/windows/x64/runner/Release s3://exeinstallers/ --recursive
