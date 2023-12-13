@@ -30,6 +30,12 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Add build_runner dependency
+        run: flutter pub add build_runner
+        
+      - name: Generate intermediates
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
       - name: Enable windows build
         run: flutter config --enable-windows-desktop
 
